@@ -1,36 +1,39 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb
+  name: mysql
   labels: 
-    app: mongodb
+    app: mysql
     tier: db
     project: roboshop
 spec:
   selector:
     matchLabels:
-      app: mongodb
+      app: mysql
       tier: db
       project: roboshop
-  serviceName: "mongodb"
+  serviceName: "mysql"
   replicas: 1 # by default is 1
   template:
     metadata:
       labels:
-        app: mongodb
+        app: mysql
         tier: db
         project: roboshop
     spec:
       containers:
-      - name: mongodb
-        image: chinna9967/mongodb:1.0.0
+      - name: mysql
+        image: chinna9967/mysql:1.0.0
+        envFrom:
+        - configMapRef:
+            name: mysql
         volumeMounts:
-        - name: mongodb
-          mountPath: /data/db
+        - name: mysql
+          mountPath: /var/lib/mysql
   # this is PVC directly.
   volumeClaimTemplates:
   - metadata:
-      name: mongodb
+      name: mysql
     spec:
       accessModes: [ "ReadWriteOnce" ]
       storageClassName: "roboshop-dynamic-ebs"
@@ -41,15 +44,26 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongodb
+  name: mysql
 spec:
   clusterIP: None #headless
   selector:
-    app: mongodb
+    app: mysql
     tier: db
     project: roboshop
   ports:
-  - name: mongodb-port
+  - name: mysql-port
     protocol: TCP
-    port: 27017 # this port belongs to service
-    targetPort: 27017 # this port belongs to container
+    port: 3306 # this port belongs to service
+    targetPort: 3306 # this port belongs to container
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql
+  namespace: roboshop
+data:
+  MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+  MYSQL_DATABASE: "cities"
+  MYSQL_USER: "shipping"
+  MYSQL_PASSWORD: "RoboShop@1"
