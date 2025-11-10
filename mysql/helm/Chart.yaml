@@ -1,7 +1,7 @@
 # metadata of our application
 apiVersion: v2
-name: mongodb
+name: mysql
 version: 0.1.0 # chart version
 appVersion: "1.0.0" # app version
-description: helm chart of mongodb
+description: helm chart of mysql
 type: application

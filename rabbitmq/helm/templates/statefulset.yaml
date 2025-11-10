@@ -1,33 +1,33 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mongodb
+  name: rabbitmq
   labels: 
-    app: mongodb
+    app: rabbitmq
     tier: db
     project: roboshop
 spec:
   selector:
     matchLabels:
-      app: mongodb
+      app: rabbitmq
       tier: db
       project: roboshop
-  serviceName: "mongodb"
+  serviceName: "rabbitmq"
   replicas: 1 # by default is 1
   template:
     metadata:
       labels:
-        app: mongodb
+        app: rabbitmq
         tier: db
         project: roboshop
     spec:
       containers:
-      - name: mongodb
-        image: "chinna9967/mongodb:{{ .Values.statefulset.imageVersion}}"
+      - name: rabbitmq
+        image: rabbitmq
         volumeMounts:
-        - name: mongodb
-          mountPath: /data/db
+        - name: rabbitmq
+          mountPath: /var/lib/rabbitmq
       volumes: 
-      - name: mogodb
+      - name: rabbitmq
         persistentVolumeClaim: 
-          claimName: ebs-mongodb-pvc
+          claimName: ebs-rabbitmq-pvc
