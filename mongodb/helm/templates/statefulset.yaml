@@ -29,6 +29,6 @@ spec:
         - name: mongodb
           mountPath: /data/db
       volumes: 
-      - name: mogodb
+      - name: mongodb
         persistentVolumeClaim: 
           claimName: ebs-mongodb-pvc
